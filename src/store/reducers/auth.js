@@ -17,6 +17,7 @@ export default (state=initialState,action) => {
            
       //  } 
         case CHECK_SUCCESS :
+        console.log(action)
         return{
               ...state,
               localId : action.localId,
