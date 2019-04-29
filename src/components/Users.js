@@ -1,27 +1,14 @@
 import React, { Component } from 'react'
 import User from "./User";
 import { connect } from 'react-redux';
-import axios from "axios"
+
 
  class Users extends Component {
-  firebase = () =>{
-    const url ="https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyBB8VV6P3qlc2LuczF_-VQtJpgAv_C3lus";
-    axios.post(url,{email:"usesdsadsfsfrds@gamil.com",password:"123dsafdssasdsffsfs4",returnSecureToken:true}).then(resp=>console.log(resp))
-    .catch(err=>console.log(err))
-    
-  }
 
-  yaz = users=>{
-    for(const x in users){
-      console.log(users[x])
-    }
-  }
   render() {
       
-      const {users,loginUser, usersLoading } = this.props;
-    // usersLoading ise loading  
-    // liste boşsa "bulunamadı hatası"
-    // en son listemiz
+      const {users, usersLoading } = this.props;
+ 
 
       return (
         <div className="col-12 mt-2">
@@ -38,7 +25,7 @@ import axios from "axios"
                   <span className="sr-only">Loading...</span>
                        </div></div>
           : 
-         // this.yaz(users[0])
+         
 
            users.filter(user =>!user[1].isTrash )
               .map(user =>{
@@ -66,7 +53,6 @@ import axios from "axios"
 }  
 const mapStateToProps = state => ({
   users : state.users.list,
-  loginUser : state.loginUser.loginUser,
   isOpen : state.isOpen.isOpen,
   usersLoading: state.loading['USERS'] 
   

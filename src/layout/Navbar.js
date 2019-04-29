@@ -2,6 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import { connect } from 'react-redux';
 import { side,logOut } from '../store/actions';
+//import firebase from "../config/fbConfig"
 //import PropTypes from 'prop-types'
 
 

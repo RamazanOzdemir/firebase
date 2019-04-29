@@ -5,7 +5,7 @@ import {connect} from "react-redux";
  class NewUsers extends Component {
 
   render() {
-    const {users,usersLoading,loginUser} = this.props;
+    const {users,usersLoading} = this.props;
     const x = Date.now()-86400000;
      return (
          <div className ="col-12 mt-2">

@@ -1,27 +1,41 @@
 import axios from "../../layout/AxiosInstance";
 import {SIGNUP_REQUEST,SIGNUP_SUCCESS,SIGNUP_FAIL,SAVED_USERS} from "./actionTypes"
 
-const url ="https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyBB8VV6P3qlc2LuczF_-VQtJpgAv_C3lus";
 
 const signupRequest = ()=>({
     type : SIGNUP_REQUEST
 })
 
-const signupSuccess = saved=>({
+const signupSuccess = ()=>({
     type : SIGNUP_SUCCESS,
-    saved 
+    
 })
 
-const signupFail = ()=> ({
-    type : SIGNUP_FAIL
+const signupFail = err=> ({
+    type : SIGNUP_FAIL,
+    err
 })
 
-export const setSavedUser = newSaved=> dispatch =>{
+export const signUp = newSaved=> (dispatch,getState,{getFirebase}) =>{
     dispatch(signupRequest())
-    console.log(newSaved)
-    axios.post(url,newSaved)
-    .then(resp => dispatch(signupSuccess(resp.data)))
-    .catch(signupFail())
+    const firebase = getFirebase();
+    const {email,password} = newSaved;
+
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+    .catch(function(error) {
+        const errorCode = error.code;
+        var errorMessage = error.message;
+         if (errorCode === 'auth/weak-password') {
+            alert('The password is too weak.');
+            dispatch(signupFail('The password is too weak.'));
+        } 
+        else {
+             alert(errorMessage);
+             dispatch(signupFail(errorMessage));
+        }
+        });
+    dispatch(signupSuccess());
+
 }
 
 export const getSavedUser = () => dispatch =>{

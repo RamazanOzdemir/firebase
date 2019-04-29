@@ -1,7 +1,8 @@
-import {SIGNUP_SUCCESS} from "../actions/actionTypes";
+import {SIGNUP_SUCCESS,SIGNUP_FAIL} from "../actions/actionTypes";
 
 const initialState = {
-    savedUsers : [0]
+    signUPError : null
+    
     
 }
 
@@ -10,14 +11,14 @@ export default (state=initialState,action) => {
         case SIGNUP_SUCCESS:
         return {
             ...state,
-            savedUsers : [...state.savedUsers,action.saved]
+            signUPError : null
            
         } 
-       // case SAVED_USERS :
-        //return {
-           // ...state,
-           // savedUsers : action.savedUsers
-       // }
+       case SIGNUP_FAIL :
+        return {
+            ...state,
+            signUPError : action.err
+        }
         default :
         return state
     }

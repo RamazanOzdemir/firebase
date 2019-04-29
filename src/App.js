@@ -12,18 +12,22 @@ import TrashBox from './components/TrashBox';
 import Login from './Login';
 import NewUsers from "./components/NewUsers";
 import UpdatedUsers from "./components/UpdatedUsers";
-import {getLogin,getUsers} from "./store/actions";
+import {getUsers} from "./store/actions";
 import {connect} from "react-redux";
-
-
 class App extends Component {
+
  componentDidMount = ()=>{
-   //this.props.getLogin();
-   this.props.getUsers();
+
+   const {firebase} = this.props
+   this.props.getUsers(firebase.auth.uid);
+   
  }
   render() {    
-    const {registered} = this.props
-              console.log(registered)
+    const {firebase} = this.props;
+ 
+    const isLogin=firebase.auth.isEmpty;
+
+              
     return(
      <Router>
 
@@ -31,14 +35,14 @@ class App extends Component {
       
        {
          
-         !registered?
-         <Switch>
+         isLogin?
+         
          <div className="container-fluid mt-5">
            <div className="row  justify-content-center my-5">
-             <Route exact path="/" component ={Login}/>
+             <Login/>
            </div>
          </div>
-         </Switch>
+         
          :
          <div className="container-fluid">
          <div className="row" >
@@ -46,7 +50,7 @@ class App extends Component {
          <Navbar title = "HOME PAGE" />
          <div className="w-100  border myheader"/>
          <Switch>
-         <Route exact path="/home" component ={Users}/>
+         <Route exact path="/" component ={Users}/>
          <Route exact path="/add" component ={AddUser}/>
          <Route exact path="/update/:id" component ={UpdatedUser}/>
          <Route exact path="/trashbox" component ={TrashBox}/>
@@ -66,13 +70,13 @@ class App extends Component {
 }
 const mapStateToProps = state => ({
 
-  registered : state.loginUser["registered"]
+  uid : state.loginUser["uid"],
+  firebase :state.firebase
 })
 
 const mapDispatchToProps = dispatch => ({
 
- // getLogin : () => dispatch(getLogin()),
-  getUsers : () => dispatch(getUsers())
+  getUsers : uid => dispatch(getUsers(uid))
  
 })
 

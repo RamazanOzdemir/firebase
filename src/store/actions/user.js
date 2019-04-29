@@ -1,16 +1,11 @@
-import axios from "../../layout/AxiosInstance";
-import axi from "axios"
-import { USERS_REQUEST, USERS_SUCCESS, USERS_FAIL,
+import { USERS_REQUEST, USERS_SUCCESS,
     DELETE_REQUEST,DELETE_SUCCESS,DELETE_FAIL ,
-    TRASH_REQUEST,TRASH_SUCCESS,TRASH_FAIL,
+    TRASH_REQUEST,TRASH_SUCCESS,
     RELOAD_REQUEST,RELOAD_SUCCESS,RELOAD_FAIL,
     ADD_REQUEST,ADD_SUCCESS,ADD_FAIL,
     UPDATE_REQUEST,UPDATE_SUCCESS,UPDATE_FAIL} from "./actionTypes";
 
-//her bir request için standart _Request, _Success, _Fail fonksiyonlarımız ve action type larımıız var
 
-const url ='https://reactapp-47e67.firebaseio.com/users.json'
-const urlpatch ='https://reactapp-47e67.firebaseio.com/users/'
 const usersRequest = () => ({
     type:USERS_REQUEST
 })
@@ -20,21 +15,16 @@ const usersSuccess = (user) => ({
     users : Object.entries(user)
 })
 
-const usersFail = () => ({
-    type: USERS_FAIL
-})
 
-export const getUsers = () => dispatch => {
-    dispatch(usersRequest()) // böylece loading['USERS'] true oldu
+
+export const getUsers = (uid) => (dispatch,getstate,{getFirebase}) => {
+    dispatch(usersRequest()) 
+    const firebase = getFirebase();
     
-    axi.get(url)
-    .then(res=>dispatch(usersSuccess(res.data)))
-    .catch(dispatch(usersFail()))
-   /* axios.get('/users')
-        .then(response=> dispatch(usersSuccess(response.data))) //loading['USERS'] false oldu
-        .catch(error=> dispatch(usersFail()))  //loading['USERS'] false oldu*/
-
-     
+    firebase.database().ref("users/"+uid).once("value",snapShot=>{
+        if(snapShot.val()!==null)
+        dispatch(usersSuccess(snapShot.val()));
+    })  
 }
 
 // DELETE USER İÇİN 
@@ -51,11 +41,16 @@ const deleteFail = () => ({
     type: DELETE_FAIL
 })
 
-export const deleteUser = (id) => dispatch => {
-    dispatch(deleteRequest())
-    axi.patch(urlpatch+`${id}/.json`,{"isTrash":true})
-    .then(resp=>dispatch(deleteSuccess(id)))
-    .catch(error=>dispatch(deleteFail()))
+export const deleteUser = (uid,id) => (dispatch,getState,{getFirebase}) => {
+    dispatch(deleteRequest());
+    const databaseRef = getFirebase().database().ref("users/"+uid+"/"+id) ;
+    databaseRef.update({isTrash:true},
+        error => {
+        if (error) {
+          dispatch(deleteFail());
+        } else {
+            dispatch(deleteSuccess(id))
+        }});
 
 }
 /// DELETE TRASH USER İÇİN
@@ -68,15 +63,12 @@ const deleteTrashSuccess = (id) => ({
     id
 })
 
-const deleteTrashFail = () => ({
-    type: TRASH_FAIL
-})
-export const deleteTrashUser = (id) => dispatch => {
+export const deleteTrashUser = (uid,id) => (dispatch,getState,{getFirebase}) => {
     dispatch(deleteTrashRequest())
-    axi.delete(urlpatch+`${id}/.json`)
-    .then(resp=>dispatch(deleteTrashSuccess(id)))
-    .catch(error => dispatch(deleteTrashFail()))
-  
+    const databaseRef = getFirebase().database().ref("users/"+uid+"/"+id) ;
+    databaseRef.remove();
+    dispatch(deleteTrashSuccess(id))
+    
 
 }
 // USER RELOAD
@@ -94,11 +86,18 @@ const reloadFail = () => ({
     type: RELOAD_FAIL
 })
 
-export const reloadUser = (id) => dispatch => {
-    dispatch(reloadRequest())
-    axi.patch(urlpatch+`${id}/.json`,{"isTrash":false})
-    .then(resp => dispatch(reloadSuccess(id)))
-    .catch(error => dispatch(reloadFail()))
+export const reloadUser = (uid,id) => (dispatch,getState,{getFirebase}) => {
+    dispatch(reloadRequest());
+    const databaseRef = getFirebase().database().ref("users/"+uid+"/"+id) ;
+    databaseRef.update({isTrash:false},
+        error => {
+        if (error) {
+          dispatch(reloadFail());
+        } else {
+            dispatch(reloadSuccess(id))
+        }});
+    
+    
  
 }
 
@@ -117,12 +116,19 @@ const addSuccess = (id,newUser) => ({
 const addFail = () => ({
     type: ADD_FAIL
 })
-export const addUser = (newUser) => dispatch => {
-    dispatch(addRequest())
-    axi.post(url,newUser)
-    .then(resp =>dispatch(addSuccess(resp.data.name,newUser)))
-    .catch(error=>dispatch(addFail()))
-
+export const addUser = (uid,newUser) => (dispatch,getstate,{getFirebase}) => {
+    
+     dispatch(addRequest());
+      const firebase = getFirebase()
+     const keyNewUser = firebase.database().ref().child('users').push().key;
+     const userRef =firebase.database().ref("users/"+uid+"/"+keyNewUser);
+     userRef.set(newUser,
+        error => {
+        if (error) {
+            dispatch(addFail());
+        } else {
+            dispatch(addSuccess(keyNewUser,newUser));
+        }});
 }
 
 //Update User
@@ -143,11 +149,16 @@ const updateFail = () => ({
     type: UPDATE_FAIL
 })
 
-export const updatedUser = (id,newUser) => dispatch => {
-    console.log(newUser)
+export const updatedUser = (uid,id,newUser) => (dispatch,getState,{getFirebase}) => {
     dispatch(updateRequest())
-    axi.patch(urlpatch+`${id}/.json`,JSON.stringify(newUser))
-    .then(resp =>dispatch(updateSuccess(id,resp.data)))
-    .catch(errror => dispatch(updateFail()))
+    const databaseRef = getFirebase().database().ref("users/"+uid+"/"+id) ;
+    databaseRef.update(newUser,
+        error => {
+        if (error) {
+            dispatch(updateFail());
+        } else {
+            dispatch(updateSuccess(id,newUser))
+        }});
+    ;
 
 }

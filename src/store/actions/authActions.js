@@ -1,67 +1,43 @@
-import axios from "../../layout/AxiosInstance";
-import axi from "axios";
-import {LOGIN_REQUEST,LOGIN_SUCCESS,LOGIN_FAIL,CHECK_REQUEST,CHECK_SUCCESS,CHECK_FAIL, LOGOUT_SUCCESS} from "./actionTypes"
+import {CHECK_REQUEST,CHECK_SUCCESS,CHECK_FAIL} from "./actionTypes"
 
-const url ="https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBB8VV6P3qlc2LuczF_-VQtJpgAv_C3lus"
-//const urlAuth ='https://reactapp-47e67.firebaseio.com/LoginUsers.json'
-
-const loginRequest = ()=>({
-    type : LOGIN_REQUEST
-})
-
-const loginSuccess = loginUser=>({
-    type : LOGIN_SUCCESS,
-    loginUser
-})
-
-const loginFail = ()=> ({
-    type : LOGIN_FAIL
-})
-export const getLogin = () => dispatch => {
-    dispatch(loginRequest())
-    axios.get('/loginUser')
-    .then(response=> dispatch(loginSuccess(response.data)))
-    .catch(error => dispatch(loginFail()))   
-}
 
 const checkRequest = ()=>({
     type : CHECK_REQUEST
-})
+});
 
-const checkSuccess = loginUser=>({
-    type : CHECK_SUCCESS,
-    registered : loginUser["registered"],
-    localId : loginUser["localId"],
-    idToken : loginUser["idToken"],
-    refreshToken : loginUser["refreshToken"],
-    expiresIn : loginUser["expiresIn"]
-})
+const checkSuccess = ()=>({
+    type : CHECK_SUCCESS
+});
 
-const checkFail = ()=> ({
-    type : CHECK_FAIL
-})
-export const userCheck =(email,password) => dispatch => {
-   const checked = {email:email,password:password,returnSecureToken:true}
-    console.log(checked)
-    dispatch(checkRequest())
-    axi.post(url,checked)
-    .then(resp => dispatch(checkSuccess(resp.data)))
-    .catch(checkFail)
-    
-    //axios.post(`/loginUser/`,checked)
-    //.then(resp =>dispatch({
-    //    type: USER_CHECKED,
-    //    login : resp.data
-    //}));
+const checkFail = err => ({
+    type : CHECK_FAIL,
+    err
+});
 
-    
+export const userCheck =(email,password) =>( dispatch,getstate,{getFirebase}) => {
+    dispatch(checkRequest());
+    const firebase = getFirebase();
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .catch(function(error) {
+     const errorCode = error.code;
+     const errorMessage = error.message;
+      if (errorCode === 'auth/wrong-password') {
+         alert('Wrong password.');
+         dispatch(checkFail("Wrong password"));
+      }
+      else {
+        alert(errorMessage);
+        dispatch(checkFail(errorMessage));
+      }
+      });
+  
+    dispatch(checkSuccess)
+ 
 }
 
-export const logOut = id => dispatch => {
-  //  axios.delete(`loginUser/${id}`)
-   // .then(resp => 
-        dispatch({
-        type : LOGOUT_SUCCESS
-    })
-   // )
+export const logOut = ()=> ( dispatch,getstate,{getFirebase}) => {
+
+      const firebase = getFirebase();
+      firebase.auth().signOut();
+       
 }

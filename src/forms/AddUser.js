@@ -35,8 +35,9 @@ class AddUser extends Component {
 
  addUser =  (e) =>{
      e.preventDefault();
-     const {addLoading} = this.props;
-     const {name,department,salary} = this.state
+     const {addLoading,firebase} = this.props;
+     const {name,department,salary} = this.state;
+     const uid = firebase.auth.uid;
      const newUser ={
         
         name : name,
@@ -45,10 +46,10 @@ class AddUser extends Component {
         creationDate : Date.now(),
         updatedDate : 0,
         isTrash : false
-     }
+     };
      if(!addLoading)
-    this.props.addUser(newUser);
-     this.props.history.push("/")
+    this.props.addUser(uid,newUser);
+     this.props.history.push("/");
  
  }
 
@@ -116,11 +117,12 @@ class AddUser extends Component {
 }
 const mapStateToProps = state => ({
     //loginUser : state.loginUser.loginUser,
-    addLoading : state.loading["ADD"]
+    addLoading : state.loading["ADD"],
+    firebase : state.firebase
   })
   
   const mapDispatchToProps = dispatch => ({
-    addUser : newUser=> dispatch(addUser(newUser)),
+    addUser : (uid,newUser)=> dispatch(addUser(uid,newUser)),
   
   })
 export default connect(mapStateToProps,mapDispatchToProps)(AddUser);

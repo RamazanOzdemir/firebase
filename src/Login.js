@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {userCheck,setSavedUser} from './store/actions';
+import {userCheck,signUp} from './store/actions';
 //import axios from "axios" 
 class Login extends Component {
   state = {
@@ -22,21 +22,15 @@ class Login extends Component {
     const {email,password} = this.state
 
       this.props.userCheck(email,password)
-      this.props.history.push("/home")
   
   }
 
-  componentWillUpdate =()=>{
-      
-    const {registered} = this.props
-    console.log("registered => "+ registered) 
-  }
 
   signup = (e) =>{
       e.preventDefault();
       const {email,password} = this.state
        const newSavedUser ={email,password,returnSecureToken:true}
-      this.props.setSavedUser(newSavedUser);
+      this.props.signUp(newSavedUser);
       this.setState(()=>({sign:false})) 
   }      
 
@@ -122,14 +116,12 @@ class Login extends Component {
   }
 }
 const mapStateToProps = state => ({
- // savedUsers : state.saved.savedUsers,
-  registered : state.loginUser["registered"]
+
 })
 
 const mapDispatchToProps = dispatch => ({
   userCheck : (email,password)=> dispatch(userCheck(email,password)),
- // getSavedUser : () => dispatch(getSavedUser()),
-  setSavedUser : user => dispatch(setSavedUser(user)) 
+  signUp : user => dispatch(signUp(user)) 
 
 
 })

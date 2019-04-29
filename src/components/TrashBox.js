@@ -6,24 +6,24 @@ import { deleteTrashUser ,reloadUser} from '../store/actions';
  class TrashBox extends Component {
 
   allDelete =  (users,e)=>{
-    const {deleteTrashUser} = this.props
+    const {deleteTrashUser,uid} = this.props
     users.filter(user => user[1].isTrash)
          .forEach  (user=>{
-           deleteTrashUser(user[0])
+           deleteTrashUser(uid,user[0])
     })
   }
   
   allReload =  (e)=>{
-    const {users,loginUser,reloadUser} = this.props
+    const {users,uid,reloadUser} = this.props
     users.filter(user => user[1].isTrash)
          .forEach(user=>{
-          reloadUser(user[0])
+          reloadUser(uid,user[0])
     })
   }
 
   render() {
       
-      const {users,loginUser} = this.props
+      const {users} = this.props
       
       return(
         
@@ -60,11 +60,11 @@ import { deleteTrashUser ,reloadUser} from '../store/actions';
 }
 const mapStateToProps = state => ({
   users : state.users.list,
-  loginUser : state.loginUser.loginUser,
+  uid : state.firebase.auth.uid
 })
 
 const mapDispatchToProps = dispatch => ({
-  deleteTrashUser: id => dispatch(deleteTrashUser(id)),
-  reloadUser : id => dispatch(reloadUser(id))
+  deleteTrashUser: (uid,id) => dispatch(deleteTrashUser(uid,id)),
+  reloadUser : (uid,id) => dispatch(reloadUser(uid,id))
 })
 export default connect(mapStateToProps,mapDispatchToProps)(TrashBox);

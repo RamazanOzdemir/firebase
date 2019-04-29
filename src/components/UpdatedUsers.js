@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 
   render() {
       
-    const {users,usersLoading,loginUser} = this.props;
+    const {users,usersLoading} = this.props;
     const x = Date.now()-86400000;
      return (
        <div className ="col-12 mt-2">
@@ -49,7 +49,6 @@ import {connect} from "react-redux";
 }  
 const mapStateToProps = state => ({
   users : state.users.list,
-  loginUser : state.loginUser.loginUser,
   usersLoading: state.loading['USERS'] 
 })
 

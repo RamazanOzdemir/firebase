@@ -16,13 +16,13 @@ import { deleteUser,deleteTrashUser,reloadUser } from '../store/actions';
       
   }
   onReLoad = (e)=>{
-    const {id,reLoading} = this.props;
+    const {id,reLoading,uid} = this.props;
      if(!reLoading)
-     this.props.reloadUser(id)
+     this.props.reloadUser(uid,id)
    
   }
   onDeleteUser = async (e)=>{
-      const {id,isTrash,deleteLoading,trashLoading} = this.props;
+      const {id,isTrash,deleteLoading,trashLoading,uid} = this.props;
       let isOK = false;
       
       
@@ -30,11 +30,11 @@ import { deleteUser,deleteTrashUser,reloadUser } from '../store/actions';
               : isOK=window.confirm("Bu user'ı çöp kutusundan kalıcı olarak silmek istiyor musunuz?").valueOf()
      
      if(isOK&&isTrash&&!trashLoading){
-      this.props.deleteTrashUser(id)
+      this.props.deleteTrashUser(uid,id)
      
     }
      else if(isOK&&!deleteLoading){
-      this.props.deleteUser(id);
+      this.props.deleteUser(uid,id);
       
      }
 
@@ -44,7 +44,7 @@ import { deleteUser,deleteTrashUser,reloadUser } from '../store/actions';
       //Destructing
       const {id,name,salary,department,isTrash} = this.props;
       const {isVisible} = this.state;
-  
+      
       return(
         <div className="col-10 col-sm-4 mb-4 mx-auto ">
         {             
@@ -81,12 +81,13 @@ import { deleteUser,deleteTrashUser,reloadUser } from '../store/actions';
  const mapStateToProps = state => ({
   deleteLoading : state.loading["DELETE"],
   trashLoading : state.loading["TRASH"],
-  reLoading : state.loading["RELOAD"]
+  reLoading : state.loading["RELOAD"],
+  uid : state.firebase.auth.uid
 })
 
 const mapDispatchToProps = dispatch => ({
-  deleteUser : id => dispatch(deleteUser(id)),
-  deleteTrashUser : id => dispatch(deleteTrashUser(id)),
-  reloadUser : id => dispatch(reloadUser(id))
+  deleteUser : (uid,id) => dispatch(deleteUser(uid,id)),
+  deleteTrashUser : (uid,id) => dispatch(deleteTrashUser(uid,id)),
+  reloadUser : (uid,id) => dispatch(reloadUser(uid,id))
 })
 export default connect(mapStateToProps,mapDispatchToProps) (User);

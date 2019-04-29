@@ -14,8 +14,7 @@ class UpdatedUser extends Component {
         [ e.target.name] : e.target.value
      })
  }
- // formlarda eklenen buton default olarak submit yapıp sayfayı yeniliyor.
- // Bunu e.preventDefault metodu ile engelliyebiliriz.
+ 
  componentWillReceiveProps =()=>{
     const {id} = this.props.match.params;
     const {users} = this.props
@@ -33,7 +32,8 @@ class UpdatedUser extends Component {
      e.preventDefault();
      const {name,department,salary} = this.state;
      const {id}=this.props.match.params;
-     const {updateLoading} = this.props
+     const {updateLoading,uid} = this.props
+     
      const newUser ={
         
         name : name,
@@ -41,14 +41,15 @@ class UpdatedUser extends Component {
         salary : salary,
         updatedDate : Date.now()
      }
-     console.log(id)
-     this.props.updatedUser(id,newUser);
+     this.props.updatedUser(uid,id,newUser);
      if(!updateLoading)
      this.props.history.push("/")
  }
 
  componentDidMount =  ()=>{
-     this.props.getUsers()
+     const {getUsers,uid} = this.props
+     getUsers(uid)
+     
  
  
  }
@@ -118,12 +119,13 @@ class UpdatedUser extends Component {
 }
 const mapStateToProps = state => ({
     users : state.users.list,
-    updateLoading : state.loading["UPDATE"]
+    updateLoading : state.loading["UPDATE"],
+    uid : state.firebase.auth.uid
   })
   
   const mapDispatchToProps = dispatch => ({
-    updatedUser : (id,newUser)=> dispatch(updatedUser(id,newUser)),
-    getUsers: () => dispatch(getUsers())
+    updatedUser : (uid,id,newUser)=> dispatch(updatedUser(uid,id,newUser)),
+    getUsers: uid => dispatch(getUsers(uid))
     
   
   })

@@ -1,30 +1,23 @@
-import {LOGIN_SUCCESS,CHECK_SUCCESS,LOGOUT_SUCCESS} from "../actions/actionTypes";
+import {CHECK_SUCCESS,CHECK_FAIL} from "../actions/actionTypes";
 
 const initialState = {
-    localId :"",
-    registered : "",
-    idToken : "",
-    refreshToken : "",
-    expiresIn : "" 
+
+   loginError : null
 }
 
 export default (state=initialState,action) => {
     switch(action.type){
-       // case LOGIN_SUCCESS:
-       // return {
-       //     ...state,
-            //loginUser : action.loginUser
-           
-      //  } 
+
         case CHECK_SUCCESS :
         console.log(action)
         return{
               ...state,
-              localId : action.localId,
-              registered : action.registered,
-              idToken : action.idToken,
-              refreshToken : action.refreshToken,
-              expiresIn : action.expiresIn      
+              loginError : null          
+        }
+        case CHECK_FAIL:
+        return {
+            ...state,
+            loginError : action.err
         }
        
         default :
