@@ -4,7 +4,7 @@ import { USERS_SUCCESS,DELETE_SUCCESS ,TRASH_SUCCESS,RELOAD_SUCCESS,ADD_SUCCESS,
 
 const initialState = {
     list : [],
-    isOpen : false
+    trash : 0
 }
 
 export default (state = initialState,action) => {
@@ -13,18 +13,20 @@ export default (state = initialState,action) => {
         case USERS_SUCCESS: 
         return {
             ...state,
-            list : action.users
-           
+            list : action.users,
+            trash : action.users.filter(user =>user[1].isTrash ).length
         }     
         case DELETE_SUCCESS:    
         return{
-         ...state,
-         list : state.list.map(user=>user[0]===action.id?[user[0],{...user[1],isTrash:true}]: user)
+          ...state,
+          list : state.list.map(user=>user[0]===action.id?[user[0],{...user[1],isTrash:true}]: user),
+          trash : state.trash + 1 
         }
         case RELOAD_SUCCESS :
         return {
           ...state,
-          list : state.list.map(user=>user[0]===action.id?[user[0],{...user[1],isTrash:false}]: user)
+          list : state.list.map(user=>user[0]===action.id?[user[0],{...user[1],isTrash:false}]: user),
+          trash : state.trash - 1
         }
         case UPDATE_SUCCESS:
         return {

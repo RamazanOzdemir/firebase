@@ -52,4 +52,5 @@ const mapStateToProps = state => ({
   usersLoading: state.loading['USERS'] 
 })
 
+
 export default connect(mapStateToProps)(UpdatedUsers);

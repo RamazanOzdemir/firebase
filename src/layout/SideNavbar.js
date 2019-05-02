@@ -21,7 +21,7 @@ class SideNavbar extends Component {
   }
 
   render() {
-    const {isOpen,side} = this.props;
+    const {isOpen,side,trash} = this.props;
     const {screen} = this.state 
     window.addEventListener("resize",this.change)
     
@@ -43,8 +43,10 @@ class SideNavbar extends Component {
               <Link to="/updatedUsers">UPDATED USERS</Link><hr/>
             </li>
 
-            <li className="nav-item" style={{marginTop:"40%"}}>
-              <Link to="/trashbox" >TRASH BOX</Link>
+            <li className="nav-item " style={{marginTop:"40%"}}>
+              <Link to="/trashbox" ><span>TRASH BOX</span>
+              {trash?<span className="badge badge-light ml-2 badge-3em">{trash}</span>:null}
+              </Link>
             </li>
           </ul>
           </div>  
@@ -55,7 +57,7 @@ class SideNavbar extends Component {
 const mapStateToProps = state => ({
     
   isOpen : state.isOpen.isOpen,
-
+  trash : state.users.trash
   
   
 })

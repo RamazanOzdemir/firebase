@@ -1,7 +1,7 @@
 import {SIGNUP_SUCCESS,SIGNUP_FAIL} from "../actions/actionTypes";
 
 const initialState = {
-    signUPError : null
+    signUpError : null
     
     
 }
@@ -11,13 +11,13 @@ export default (state=initialState,action) => {
         case SIGNUP_SUCCESS:
         return {
             ...state,
-            signUPError : null
+            signUpError : null
            
         } 
        case SIGNUP_FAIL :
         return {
             ...state,
-            signUPError : action.err
+            signUpError : action.err
         }
         default :
         return state

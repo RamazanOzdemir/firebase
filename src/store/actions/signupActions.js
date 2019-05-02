@@ -26,11 +26,9 @@ export const signUp = newSaved=> (dispatch,getState,{getFirebase}) =>{
         const errorCode = error.code;
         var errorMessage = error.message;
          if (errorCode === 'auth/weak-password') {
-            alert('The password is too weak.');
             dispatch(signupFail('The password is too weak.'));
         } 
         else {
-             alert(errorMessage);
              dispatch(signupFail(errorMessage));
         }
         });

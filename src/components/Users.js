@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import User from "./User";
 import { connect } from 'react-redux';
+import {getUsers} from "../store/actions/user";
 
 
  class Users extends Component {
-
+  componentDidMount = () =>{
+    const {getUsers,uid} = this.props;
+    getUsers(uid);
+  }
   render() {
       
       const {users, usersLoading } = this.props;
@@ -13,7 +17,6 @@ import { connect } from 'react-redux';
       return (
         <div className="col-12 mt-2">
           <div className="col-12 col-sm-6 mx-auto ">
-            <button className ="btn btn-info btn-block" onClick={this.firebase}>FIREBASE</button>
             <h1 className="bg-danger text-white mb-3 text-center rounded">
               ALL USERS
             </h1>
@@ -54,9 +57,15 @@ import { connect } from 'react-redux';
 const mapStateToProps = state => ({
   users : state.users.list,
   isOpen : state.isOpen.isOpen,
-  usersLoading: state.loading['USERS'] 
-  
+  usersLoading: state.loading['USERS'], 
+  uid : state.firebase.auth.uid
   
 })
 
-export default connect(mapStateToProps)(Users);
+const mapDispatchToProps = dispatch => ({
+
+  getUsers : uid => dispatch(getUsers(uid))
+ 
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(Users);

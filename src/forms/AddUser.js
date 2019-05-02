@@ -1,40 +1,24 @@
 import React, { Component } from 'react'
-// import posed from "react-pose"; animation için yüklenmişti
 import {connect} from "react-redux"
 import {addUser} from "../store/actions"
 
-/* const Animation = posed.div({
-    visible : {
-        opacity : 1,
-        applyAtStart :{
-            display : "block"
-        }
-    },
-    hidden : {
-        opacity : 0,
-        applyAtEnd : {
-            display : "none"
-        }
 
-       ***** ANİMASYON İÇİN*****
-    }
-}); */
 class AddUser extends Component {
     state = {
         visible : false,
         name : "",
         department :"",
-        salary : ""
+        salary : "",
+        addError : false
     }
     
  changeInput = (e)=>{
      this.setState({
         [ e.target.name] : e.target.value
-     })
+     });
  }
 
  addUser =  (e) =>{
-     e.preventDefault();
      const {addLoading,firebase} = this.props;
      const {name,department,salary} = this.state;
      const uid = firebase.auth.uid;
@@ -52,9 +36,18 @@ class AddUser extends Component {
      this.props.history.push("/");
  
  }
-
+ control = (e) =>{
+     e.preventDefault()
+     const {name} = this.state;
+     if(name === "")
+        this.setState({addError : true});
+     else{
+        this.setState({addError : false});
+        this.addUser();
+        }
+ }
   render() {
-    const {name,department,salary} = this.state;
+    const {name,department,salary,addError} = this.state;
     const {addLoading} = this.props;
                     return (
       
@@ -64,7 +57,14 @@ class AddUser extends Component {
                                     <h4>ADD USER</h4>
                                 </div>
                                 <div className="card-body">
-                                    <form onSubmit={this.addUser}>
+                                    <form>
+                                        {
+                                            addError?
+                                            <div className = "alert alert-danger">
+                                                <p className="my-auto">Name section cannot be empty</p>
+                                            </div>
+                                            :null
+                                        }
                                         <div className="form-group">
                                             <label htmlFor="name">Name</label>
                                             <input
@@ -103,7 +103,7 @@ class AddUser extends Component {
                                             />                        
                                         </div>
                                            
-                                        <button className="btn btn-danger btn-block" onClick ={this.addUser}
+                                        <button className="btn btn-danger btn-block" onClick ={this.control}
                                         disabled={addLoading}>ADD USER</button>
                                     </form>
                                 </div>
@@ -116,13 +116,12 @@ class AddUser extends Component {
   }
 }
 const mapStateToProps = state => ({
-    //loginUser : state.loginUser.loginUser,
     addLoading : state.loading["ADD"],
     firebase : state.firebase
   })
   
   const mapDispatchToProps = dispatch => ({
-    addUser : (uid,newUser)=> dispatch(addUser(uid,newUser)),
+    addUser : (uid,newUser)=> dispatch(addUser(uid,newUser))
   
   })
 export default connect(mapStateToProps,mapDispatchToProps)(AddUser);

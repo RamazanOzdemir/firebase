@@ -17,7 +17,7 @@ const Navbar = (props)=>{
     return(
         
        <div className="col-12 border border-dark fixed-top myheader px-0">
-        <nav className="navbar-nav navbar-expand bg-dark navbar-dark  pr-3 myheader ">
+        <nav className="navbar-nav navbar-expand  navbar-dark  pr-3 myheader ">
            <span className="navbar-nav mr-2 bg-light  my-auto fas fa-ellipsis-v size-3 fa-2x d-sm-none" 
             onClick={side} style={{cursor:"pointer"}}
             ></span>
@@ -41,13 +41,10 @@ const Navbar = (props)=>{
         </div>
     )
 }
-const mapStateToProps = state => ({
-    
-    loginUser : state.loginUser.loginUser
-})
+
   
 const mapDispatchToProps = dispatch => ({
     side : ()=> dispatch(side()),
     logOut : id => dispatch(logOut(id))
 })
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+export default connect(null, mapDispatchToProps)(Navbar);

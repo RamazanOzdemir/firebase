@@ -1,4 +1,4 @@
-import { USERS_REQUEST, USERS_SUCCESS,
+import { USERS_REQUEST, USERS_SUCCESS,USERS_FAIL,
     DELETE_REQUEST,DELETE_SUCCESS,DELETE_FAIL ,
     TRASH_REQUEST,TRASH_SUCCESS,
     RELOAD_REQUEST,RELOAD_SUCCESS,RELOAD_FAIL,
@@ -14,7 +14,9 @@ const usersSuccess = (user) => ({
     type: USERS_SUCCESS,
     users : Object.entries(user)
 })
-
+const usersFail = () =>({
+    type : USERS_FAIL
+})
 
 
 export const getUsers = (uid) => (dispatch,getstate,{getFirebase}) => {
@@ -24,6 +26,8 @@ export const getUsers = (uid) => (dispatch,getstate,{getFirebase}) => {
     firebase.database().ref("users/"+uid).once("value",snapShot=>{
         if(snapShot.val()!==null)
         dispatch(usersSuccess(snapShot.val()));
+        else
+        dispatch(usersFail());
     })  
 }
 

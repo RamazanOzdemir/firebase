@@ -22,11 +22,9 @@ export const userCheck =(email,password) =>( dispatch,getstate,{getFirebase}) =>
      const errorCode = error.code;
      const errorMessage = error.message;
       if (errorCode === 'auth/wrong-password') {
-         alert('Wrong password.');
          dispatch(checkFail("Wrong password"));
       }
       else {
-        alert(errorMessage);
         dispatch(checkFail(errorMessage));
       }
       });

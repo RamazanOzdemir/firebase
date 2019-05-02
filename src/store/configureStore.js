@@ -17,10 +17,11 @@ import fbConfig from "../config/fbConfig"
 
 const rootReducer = combineReducers({
   
-    loginUser : authReducer,
+    login : authReducer,
+
     isOpen : sideReducer,
     loading : loadingReducer,
-    saved : signinReducer,
+    signup : signinReducer,
     users: usersReducer,
     firebase :firebaseReducer
 })

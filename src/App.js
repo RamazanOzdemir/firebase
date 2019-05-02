@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Users from "./components/Users";
 import AddUser from "./forms/AddUser";
-
 import Navbar from "./layout/Navbar";
 import {BrowserRouter as Router,Route,Switch} from "react-router-dom";
 import NotFound from "./pages/NotFound";
@@ -12,16 +11,14 @@ import TrashBox from './components/TrashBox';
 import Login from './Login';
 import NewUsers from "./components/NewUsers";
 import UpdatedUsers from "./components/UpdatedUsers";
-import {getUsers} from "./store/actions";
 import {connect} from "react-redux";
+import {getUsers} from "./store/actions"
 class App extends Component {
 
- componentDidMount = ()=>{
-
-   const {firebase} = this.props
-   this.props.getUsers(firebase.auth.uid);
-   
- }
+componentDidMount = () => {
+  const {firebase,getUsers} = this.props;
+  getUsers(firebase.auth.uid);
+}
   render() {    
     const {firebase} = this.props;
  
@@ -70,14 +67,12 @@ class App extends Component {
 }
 const mapStateToProps = state => ({
 
-  uid : state.loginUser["uid"],
   firebase :state.firebase
 })
 
 const mapDispatchToProps = dispatch => ({
-
   getUsers : uid => dispatch(getUsers(uid))
- 
 })
+
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);

@@ -44,7 +44,7 @@ code {
     width: 15%;
     background-color : rgb(52, 52, 52);
     height: 100%;
-    overflow-y: hidden;
+    overflow-y: auto;
     z-index: 2000;
     
     

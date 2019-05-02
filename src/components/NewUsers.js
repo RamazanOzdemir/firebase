@@ -45,7 +45,6 @@ import {connect} from "react-redux";
 }  
 const mapStateToProps = state => ({
   users : state.users.list,
-  loginUser : state.loginUser.loginUser,
   usersLoading: state.loading['USERS'] 
 })
 

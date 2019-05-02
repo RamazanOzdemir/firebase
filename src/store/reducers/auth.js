@@ -15,6 +15,7 @@ export default (state=initialState,action) => {
               loginError : null          
         }
         case CHECK_FAIL:
+        console.log(action.err)
         return {
             ...state,
             loginError : action.err
